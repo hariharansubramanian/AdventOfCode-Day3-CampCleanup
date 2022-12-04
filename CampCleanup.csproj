@@ -9,9 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="assigned_sections.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="assigned_sections.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
