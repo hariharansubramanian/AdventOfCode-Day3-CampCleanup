@@ -2,37 +2,54 @@
 
 var assignedSections = File.ReadLines("assigned_sections.txt").ToList();
 
-// Puzzle 1
+#region Puzzle 1
+
 var completelyOverlappingSectionsCount = 0;
 assignedSections.ForEach(pair =>
 {
-    var (firstElfSections, secondElfSections) = GetAssignedSections(pair);
-    if (firstElfSections.All(s => secondElfSections.Contains(s)) || secondElfSections.All(s => firstElfSections.Contains(s))) completelyOverlappingSectionsCount++;
+    var (firstElfStart, firstElfEnd, secondElfStart, secondElfEnd) = GetAssignedSections(pair);
+    if (IsOverlapping(firstElfStart, firstElfEnd, secondElfStart, secondElfEnd)) completelyOverlappingSectionsCount++;
 });
-
 Console.WriteLine($"There are {completelyOverlappingSectionsCount} assigned sections that are completely overlapping.");
 
-// Puzzle 2
-var partiallyOverlappingSectionsCount = 0;
+#endregion
+
+#region Puzzle 2
+
+var intersectingSectionsCount = 0;
 assignedSections.ForEach(pair =>
 {
-    var (firstElfSections, secondElfSections) = GetAssignedSections(pair);
-    if (firstElfSections.Any(s => secondElfSections.Contains(s)) || secondElfSections.Any(s => firstElfSections.Contains(s))) partiallyOverlappingSectionsCount++;
+    var (firstElfStart, firstElfEnd, secondElfStart, secondElfEnd) = GetAssignedSections(pair);
+    if (IsIntersecting(firstElfStart, firstElfEnd, secondElfStart, secondElfEnd)) intersectingSectionsCount++;
 });
+Console.WriteLine($"There are {intersectingSectionsCount} assigned sections that are partially overlapping.");
 
-Console.WriteLine($"There are {partiallyOverlappingSectionsCount} assigned sections that are partially overlapping.");
+#endregion
 
-Console.WriteLine("Finished analyzing assigned camp sections.");
+#region Functions
 
-
-// Functions
-(List<int> firstElfSections, List<int> secondElfSections) GetAssignedSections(string assignmentPair)
+(int firstElfStart, int firstElfEnd, int secondElfStart, int secondElfEnd) GetAssignedSections(string assignmentPair)
 {
     var sections = assignmentPair.Split(',');
     var firstElfSectionTag = sections[0].Split("-").Select(int.Parse).ToArray();
-    var secondElfSectionTag = sections[1].Split("-").Select(int.Parse).ToArray();
+    var firstElfStart = firstElfSectionTag[0];
+    var firstElfEnd = firstElfSectionTag[1];
 
-    var firstElfSections = Enumerable.Range(firstElfSectionTag[0], firstElfSectionTag[1] - firstElfSectionTag[0] + 1).ToList();
-    var secondElfSections = Enumerable.Range(secondElfSectionTag[0], secondElfSectionTag[1] - secondElfSectionTag[0] + 1).ToList();
-    return (firstElfSections, secondElfSections);
+    var secondElfSectionTag = sections[1].Split("-").Select(int.Parse).ToArray();
+    var secondElfStart = secondElfSectionTag[0];
+    var secondElfEnd = secondElfSectionTag[1];
+
+    return (firstElfStart, firstElfEnd, secondElfStart, secondElfEnd);
 }
+
+bool IsOverlapping(int start1, int end1, int start2, int end2)
+{
+    return start1 <= start2 && end1 >= end2 || start2 <= start1 && end2 >= end1;
+}
+
+bool IsIntersecting(int start1, int end1, int start2, int end2)
+{
+    return start1 <= start2 && end1 >= start2 || start2 <= start1 && end2 >= start1;
+}
+
+#endregion
